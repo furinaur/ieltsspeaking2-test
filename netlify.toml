@@ -1,0 +1,38 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+# API routes -> serverless functions (listed first so the SPA fallback never swallows them)
+[[redirects]]
+  from = "/api/evaluate-speech"
+  to = "/.netlify/functions/evaluate-speech"
+  status = 200
+
+[[redirects]]
+  from = "/api/generate-cue-card"
+  to = "/.netlify/functions/generate-cue-card"
+  status = 200
+
+[[redirects]]
+  from = "/api/evaluate-followup"
+  to = "/.netlify/functions/evaluate-followup"
+  status = 200
+
+# Single-page app fallback
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Microphone must be allowed on this site (the app records speech)
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Permissions-Policy = "microphone=(self)"
